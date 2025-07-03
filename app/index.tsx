@@ -13,7 +13,14 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const BOOKS = ["Genesis", "Exodo", "Levitico", "Numeros", "Deuteronomio"];
+const BOOKS = [
+  "Genesis",
+  "Exodo",
+  "Levitico",
+  "Numeros",
+  "Deuteronomio",
+  "Mateo",
+];
 const API_URL = "https://jesusrestaura.com/api/v1/verse";
 
 export default function HomeScreen() {
