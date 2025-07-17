@@ -1,32 +1,30 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/useColorScheme";
+import {
+  ThemeProvider,
+  DarkTheme,
+  DefaultTheme,
+} from "@react-navigation/native";
+import { useColorScheme } from "react-native"; // Fallback if your custom hook is buggy
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded) return null;
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
-        {/* Your main tab or home screen */}
+        {/* Home screen */}
         <Stack.Screen name="index" options={{ headerShown: false }} />
-
-        {/* Not found screen config */}
+        {/* Other screens will auto-register if placed under `app/` */}
         <Stack.Screen name="+not-found" options={{ title: "Oops!" }} />
       </Stack>
       <StatusBar style="auto" />
