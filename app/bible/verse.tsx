@@ -1,4 +1,4 @@
-// app/index.tsx
+// app/bible/verse.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -27,7 +27,7 @@ const BOOKS = [
 ];
 const API_URL = "https://jesusrestaura.com/api/v1/verse";
 
-export default function HomeScreen() {
+export default function VerseScreen() {
   const router = useRouter();
   const [book, setBook] = useState("genesis");
   const [reference, setReference] = useState("");
@@ -56,67 +56,48 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.header}>📖 Jesus Restaura</Text>
-        <Text style={styles.label}>Selecciona un Libro</Text>
-        <View style={styles.pickerWrapper}>
+    <SafeAreaView style={verseStyles.container}>
+      <ScrollView contentContainerStyle={verseStyles.scroll}>
+        <Text style={verseStyles.header}>📖 Buscar Versículo</Text>
+        <Text style={verseStyles.label}>Selecciona un Libro</Text>
+        <View style={verseStyles.pickerWrapper}>
           <Picker
             selectedValue={book}
             onValueChange={(v) => setBook(v)}
-            style={Platform.OS === "ios" ? styles.pickerIOS : styles.picker}
+            style={
+              Platform.OS === "ios" ? verseStyles.pickerIOS : verseStyles.picker
+            }
           >
             {BOOKS.map((b) => (
               <Picker.Item label={b} value={b.toLowerCase()} key={b} />
             ))}
           </Picker>
         </View>
-        <Text style={styles.label}>Versículo (ej. 3:16)</Text>
+        <Text style={verseStyles.label}>Versículo (ej. 3:16)</Text>
         <TextInput
-          style={styles.input}
+          style={verseStyles.input}
           placeholder="Ej: 3:16"
           value={reference}
           onChangeText={setReference}
           placeholderTextColor="#999"
         />
-        <View style={styles.button}>
+        <View style={verseStyles.button}>
           <Button
-            title="Encontrar Versículo"
+            title="Buscar Versículo"
             color="#ff6b00"
             onPress={fetchVerse}
           />
         </View>
 
-        <View style={styles.navButtons}>
-          <Button
-            title="Capítulo"
-            onPress={() =>
-              router.push({ pathname: "/chapter", params: { book } })
-            }
-          />
-          <Button
-            title="Rango"
-            onPress={() =>
-              router.push({ pathname: "/range", params: { book } })
-            }
-          />
-          <Button
-            title="Buscar Palabra"
-            onPress={() =>
-              router.push({ pathname: "/search", params: { book } })
-            }
-          />
-        </View>
-
         {loading && <ActivityIndicator size="large" color="#ff6b00" />}
         {error ? (
-          <Text style={styles.error}>{error}</Text>
+          <Text style={verseStyles.error}>{error}</Text>
         ) : verse ? (
-          <View style={styles.verseCard}>
-            <Text style={styles.verseTitle}>
+          <View style={verseStyles.verseCard}>
+            <Text style={verseStyles.verseTitle}>
               {book.charAt(0).toUpperCase() + book.slice(1)} {reference}
             </Text>
-            <Text style={styles.verseText}>{verse}</Text>
+            <Text style={verseStyles.verseText}>{verse}</Text>
           </View>
         ) : null}
       </ScrollView>
@@ -124,15 +105,15 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const verseStyles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
   scroll: { padding: 20 },
   header: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "bold",
     color: "#ff6b00",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   label: { fontSize: 16, color: "#333", marginTop: 10, marginBottom: 5 },
   pickerWrapper: {
@@ -152,7 +133,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: { marginBottom: 20 },
-  navButtons: { marginVertical: 10 },
   verseCard: {
     backgroundColor: "#fff7e6",
     borderColor: "#ff6b00",
