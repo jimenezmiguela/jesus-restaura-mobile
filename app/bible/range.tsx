@@ -8,14 +8,25 @@ import {
   ActivityIndicator,
   ScrollView,
   Alert,
+  Platform,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const API_URL = "https://jesusrestaura.com/api/v1/range";
+const BOOKS = [
+  "Genesis",
+  "Exodo",
+  "Levitico",
+  "Numeros",
+  "Deuteronomio",
+  "Mateo",
+  "Salmos",
+  "Jeremias",
+];
 
 export default function RangeScreen() {
-  const { book } = useLocalSearchParams<{ book: string }>();
+  const [book, setBook] = useState("genesis");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [verses, setVerses] = useState<string | null>(null);
@@ -44,7 +55,7 @@ export default function RangeScreen() {
       if (!res.ok || !data.verses) {
         setError(data.error || "Rango no encontrado");
       } else {
-        setVerses(data.verses); // now safely using string
+        setVerses(data.verses);
       }
     } catch {
       setError("Error de conexión");
@@ -58,13 +69,25 @@ export default function RangeScreen() {
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.header}>📖 Buscar Rango</Text>
 
+        <Text style={styles.label}>Libro</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={book}
+            onValueChange={setBook}
+            style={Platform.OS === "ios" ? styles.pickerIOS : styles.picker}
+          >
+            {BOOKS.map((b) => (
+              <Picker.Item label={b} value={b.toLowerCase()} key={b} />
+            ))}
+          </Picker>
+        </View>
+
         <Text style={styles.label}>Versículo de Inicio</Text>
         <TextInput
           style={styles.input}
           placeholder="Ej: 3:16"
           value={start}
           onChangeText={setStart}
-          placeholderTextColor="#999"
         />
 
         <Text style={styles.label}>Versículo de Fin</Text>
@@ -73,12 +96,9 @@ export default function RangeScreen() {
           placeholder="Ej: 3:19"
           value={end}
           onChangeText={setEnd}
-          placeholderTextColor="#999"
         />
 
-        <View style={styles.button}>
-          <Button title="Buscar Rango" color="#ff6b00" onPress={fetchRange} />
-        </View>
+        <Button title="Buscar Rango" color="#ff6b00" onPress={fetchRange} />
 
         {loading && <ActivityIndicator size="large" color="#ff6b00" />}
         {error ? (
@@ -103,16 +123,22 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
-  label: { fontSize: 16, color: "#333", marginTop: 10, marginBottom: 5 },
+  label: { fontSize: 16, color: "#333", marginBottom: 8 },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    marginBottom: 15,
+  },
+  picker: { height: 50, backgroundColor: "#fff" },
+  pickerIOS: { height: 150 },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
     padding: 10,
-    fontSize: 16,
     marginBottom: 15,
   },
-  button: { marginBottom: 20 },
   verseCard: {
     backgroundColor: "#fff7e6",
     borderColor: "#ff6b00",
